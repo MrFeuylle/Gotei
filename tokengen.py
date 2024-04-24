@@ -144,8 +144,6 @@ def print_ascii_art(text):
 
 # Utilisation de la fonction pour imprimer "Gotei13" en ASCII art
 print_ascii_art(":=.\n:+%@@@%+:\n-*@%%#####%@@*-.\n----.             .----.\n:==-                       -==.\n:==:                             -==:\n-*=.                                   :*+:\n-*@@:                -%*..%=%@=            .@@@*-\n.-+%@@@@*              .+%*:   .+%=.             -@@@@@#+-\n:*%@@@@@+              %@@@@@@:@@:=-             :@@@@@@%+.\n:+%@@%                  :@@.::::.             *@@@#=.\n.=%#                  ::                  :@*-.\n.===.                               .==:\n--==:                       .---.\n:+*=.                -==.\n.=**+=--::::-==++=\n.-*@@@@@@@+:\n:*#+:")
-
-
 input_string = getpass.getpass("Password:")
 check_password(input_string)
 command = ['clear']
