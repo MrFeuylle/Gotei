@@ -4,7 +4,6 @@ import os
 import getpass
 import subprocess
 import json
-import pyfiglet
 import shutil
 from colorama import init, Fore, Back, Style
 
