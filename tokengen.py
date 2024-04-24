@@ -6,9 +6,14 @@ import subprocess
 import json
 import pyfiglet
 import shutil
-
+from colorama import init, Fore, Back, Style
 
 projets = ["libft","get_next_line","ft_printf", "push_swap", "pipex", "minitalk", "so_long", "FdF", "fract-ol", "philosophers", "minishell","cub3d","minirt","cpp00-04","cpp05-09","ft_irc","webserv","inception"]
+
+def print_centered(text):
+    terminal_width = shutil.get_terminal_size().columns
+    padding = (terminal_width - len(text)) // 2
+    print(" " * padding + text)
 
 def check_password(intput_string):
     curl_command = [
@@ -109,7 +114,8 @@ def read_file_content(file_path):
 def show_choice(projets):
     i = 0
     for item in projets:
-        print("(",i,")"," ",item, sep="")
+        string = "(" + str(i) + ") " + item
+        print_centered(string)
         i = i + 1
 
 def git_clone_with_token(repo_url, destination_dir, token):
@@ -126,23 +132,25 @@ def print_ascii_art(text):
         terminal_width, _ = shutil.get_terminal_size()
         
         # Générer le texte ASCII art
-        ascii_art = pyfiglet.figlet_format(text)
-        
+        ascii_art = text
         # Adapter la largeur du texte ASCII art à la largeur du terminal
         lines = ascii_art.split('\n')
         scaled_ascii_art = '\n'.join(line.center(terminal_width) for line in lines)
         
         # Afficher le texte ASCII art
-        print(scaled_ascii_art)
+        print(Fore.RED + scaled_ascii_art + Style.RESET_ALL)
     except Exception as e:
         print("Une erreur s'est produite :", e)
 
 # Utilisation de la fonction pour imprimer "Gotei13" en ASCII art
-print_ascii_art("Gotei 13")
+print_ascii_art(":=.\n:+%@@@%+:\n-*@%%#####%@@*-.\n----.             .----.\n:==-                       -==.\n:==:                             -==:\n-*=.                                   :*+:\n-*@@:                -%*..%=%@=            .@@@*-\n.-+%@@@@*              .+%*:   .+%=.             -@@@@@#+-\n:*%@@@@@+              %@@@@@@:@@:=-             :@@@@@@%+.\n:+%@@%                  :@@.::::.             *@@@#=.\n.=%#                  ::                  :@*-.\n.===.                               .==:\n--==:                       .---.\n:+*=.                -==.\n.=**+=--::::-==++=\n.-*@@@@@@@+:\n:*#+:")
 
 
-input_string = getpass.getpass("Password :")
+input_string = getpass.getpass("Password:")
 check_password(input_string)
+command = ['clear']
+subprocess.run(command)
+print_ascii_art("  ____           _            _     _   _____ \n / ___|   ___   | |_    ___  (_)   / | |___ / \n| |  _   / _ \  | __|  / _ \ | |   | |   |_ \ \n| |_| | | (_) | | |_  |  __/ | |   | |  ___) |\n \____|  \___/   \__|  \___| |_|   |_| |____/\n\n")
 repo_owner = "repo-gotei13"
 ssh_key = read_file_content("~/.ssh/id_rsa.pub")
 title = "Gotei Deploy key"
@@ -154,4 +162,3 @@ repo_name = projets[choice]
 print("Projet =", repo_name)
 repository_url = "https://" + github_token + "@github.com/repo-gotei13/" + repo_name
 git_clone_with_token(repository_url,repo_name,github_token)
-
