@@ -152,7 +152,6 @@ command = ['clear']
 subprocess.run(command)
 print_ascii_art("  ____           _            _     _   _____ \n / ___|   ___   | |_    ___  (_)   / | |___ / \n| |  _   / _ \  | __|  / _ \ | |   | |   |_ \ \n| |_| | | (_) | | |_  |  __/ | |   | |  ___) |\n \____|  \___/   \__|  \___| |_|   |_| |____/\n\n")
 repo_owner = "repo-gotei13"
-title = "Gotei Deploy key"
 github_token = get_token(input_string)
 show_choice(projets)
 choice = getpass.getpass("")
