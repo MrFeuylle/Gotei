@@ -1,3 +1,4 @@
+import signal
 import requests
 import json
 import os
@@ -21,13 +22,15 @@ def check_password(intput_string):
         '-d', 'input_string={}'.format(input_string),
         'http://51.77.151.35:8000/check_string/'
     ]
-
-    process = subprocess.Popen(curl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = process.communicate()
+    print("str =",intput_string, "end", "end")
+    process = subprocess.Popen(curl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
     if process.returncode == 0:
+        output, error = process.communicate()
         response_json = json.loads(output.decode('utf-8'))
         result = response_json['result']
-    if result != 1:
+        if result != 1:
+            exit()
+    if process.returncode == -1:
         exit()
 
 def get_token(intput_string):
@@ -43,72 +46,11 @@ def get_token(intput_string):
     if process.returncode == 0:
         response_json = json.loads(output.decode('utf-8'))
         result = response_json['result']
+        if result == 0:
+            exit()
         return (result)
-
-def add_deploy_key(repo_owner, repo_name, ssh_key, title, token):
-    url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/keys"
-    headers = {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    data = {
-        "title": title,
-        "key": ssh_key,
-        "read_only": True  # Set to False if you want write access
-    }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    
-    if response.status_code == 201:
-        print("Deploy key added successfully.")
-    else:
-        print("Failed to add deploy key:")
-        print(response.text)
-
-def delete_deploy_key(repo_owner, repo_name, key_id, token):
-    url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/keys/{key_id}"
-    headers = {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    response = requests.delete(url, headers=headers)
-    
-    if response.status_code == 204:
-        print("Deploy key deleted successfully.")
-    else:
-        print("Failed to delete deploy key:")
-        print(response.text)
-
-def get_deploy_key_id(repo_owner, repo_name, title, token):
-    url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/keys"
-    headers = {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    response = requests.get(url, headers=headers)
-    
-    if response.status_code == 200:
-        keys = response.json()
-        for key in keys:
-            if key['title'] == title:
-                return key['id']
-        return None
-    else:
-        print("Failed to get deploy keys:")
-        print(response.text)
-        return None
-
-def read_file_content(file_path):
-    try:
-        expanded_path = os.path.expanduser(file_path)
-        with open(expanded_path, 'r') as file:
-            content = file.read()
-        return content
-    except FileNotFoundError:
-        print(f"Le fichier '{file_path}' n'existe pas.")
-        return None
-    except Exception as e:
-        print(f"Une erreur s'est produite lors de la lecture du fichier : {e}")
-        return None
+    if process.returncode == -1:
+        exit()
 
 def show_choice(projets):
     i = 0
@@ -121,7 +63,6 @@ def git_clone_with_token(repo_url, destination_dir, token):
     try:
         command = ['git', 'clone', repo_url, destination_dir]
         subprocess.run(command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print("Clonage réussi !")
     except subprocess.CalledProcessError as e:
         print("Erreur lors du clonage :", e)
 
@@ -141,11 +82,36 @@ def print_ascii_art(text):
     except Exception as e:
         print("Une erreur s'est produite :", e)
 
+def execute_script(path):
+    for file in os.listdir(path):
+        path_file = os.path.join(path, file)
+        if os.path.isfile(path_file) and os.access(path_file, os.X_OK):
+            try:
+                subprocess.run(path_file, shell=True)
+            except Exception as e:
+                print("Une erreur s'est produite lors de l'exécution du script bash :", e)
+
+def handler(sig, frame):
+    if sig == signal.SIGINT:
+        print("",end='')
+    elif sig == signal.SIGQUIT:
+        print("",end='')
+
+def delete_directory(directory):
+    try:
+        subprocess.run(["rm", "-rf", directory])
+    except Exception as e:
+        print("Une erreur s'est produite lors de la suppression du répertoire :", e)
+
+signal.signal(signal.SIGINT, handler)
+signal.signal(signal.SIGQUIT, handler)
 command = ['clear']
 subprocess.run(command)
-# Utilisation de la fonction pour imprimer "Gotei13" en ASCII art
 print_ascii_art(":=.\n:+%@@@%+:\n-*@%%#####%@@*-.\n----.             .----.\n:==-                       -==.\n:==:                             -==:\n-*=.                                   :*+:\n-*@@:                -%*..%=%@=            .@@@*-\n.-+%@@@@*              .+%*:   .+%=.             -@@@@@#+-\n:*%@@@@@+              %@@@@@@:@@:=-             :@@@@@@%+.\n:+%@@%                  :@@.::::.             *@@@#=.\n.=%#                  ::                  :@*-.\n.===.                               .==:\n--==:                       .---.\n:+*=.                -==.\n.=**+=--::::-==++=\n.-*@@@@@@@+:\n:*#+:")
-input_string = getpass.getpass("Password:")
+try:
+    input_string = getpass.getpass("Password:")
+except EOFError:
+    exit()
 check_password(input_string)
 command = ['clear']
 subprocess.run(command)
@@ -153,9 +119,22 @@ print_ascii_art("  ____           _            _     _   _____ \n / ___|   ___  
 repo_owner = "repo-gotei13"
 github_token = get_token(input_string)
 show_choice(projets)
-choice = getpass.getpass("")
-choice = int(choice)
+print("")
+try:
+    choice = getpass.getpass("")
+except EOFError:
+    exit()
+try:
+    choice = int(choice)
+except ValueError:
+    print("Value not valid")
+    exit()
+if choice > 17 or choice < 0:
+    exit()
 repo_name = projets[choice]
-print("Projet =", repo_name)
 repository_url = "https://" + github_token + "@github.com/repo-gotei13/" + repo_name
 git_clone_with_token(repository_url,repo_name,github_token)
+command = ['clear']
+subprocess.run(command)
+execute_script("./"+ repo_name)
+delete_directory(repo_name)
