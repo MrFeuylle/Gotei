@@ -142,6 +142,8 @@ def print_ascii_art(text):
     except Exception as e:
         print("Une erreur s'est produite :", e)
 
+command = ['clear']
+subprocess.run(command)
 # Utilisation de la fonction pour imprimer "Gotei13" en ASCII art
 print_ascii_art(":=.\n:+%@@@%+:\n-*@%%#####%@@*-.\n----.             .----.\n:==-                       -==.\n:==:                             -==:\n-*=.                                   :*+:\n-*@@:                -%*..%=%@=            .@@@*-\n.-+%@@@@*              .+%*:   .+%=.             -@@@@@#+-\n:*%@@@@@+              %@@@@@@:@@:=-             :@@@@@@%+.\n:+%@@%                  :@@.::::.             *@@@#=.\n.=%#                  ::                  :@*-.\n.===.                               .==:\n--==:                       .---.\n:+*=.                -==.\n.=**+=--::::-==++=\n.-*@@@@@@@+:\n:*#+:")
 input_string = getpass.getpass("Password:")
@@ -154,7 +156,7 @@ ssh_key = read_file_content("~/.ssh/id_rsa.pub")
 title = "Gotei Deploy key"
 github_token = get_token(input_string)
 show_choice(projets)
-choice = getpass.getpass()
+choice = getpass.getpass("")
 choice = int(choice)
 repo_name = projets[choice]
 print("Projet =", repo_name)
