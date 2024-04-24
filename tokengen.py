@@ -156,7 +156,7 @@ ssh_key = read_file_content("~/.ssh/id_rsa.pub")
 title = "Gotei Deploy key"
 github_token = get_token(input_string)
 show_choice(projets)
-choice = input()
+choice = getpass.getpass()
 choice = int(choice)
 repo_name = projets[choice]
 print("Projet =", repo_name)
