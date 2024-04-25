@@ -35,7 +35,7 @@ def check_password(input_string):
         result = response_json['result']
         if result == 1:
             return
-        else
+        else:
             exit()
     if process.returncode == -1:
         exit()
