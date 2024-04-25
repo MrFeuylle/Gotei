@@ -28,7 +28,6 @@ def check_password(input_string):
         '-d', 'input_string={}'.format(input_string),
         'http://51.77.151.35:8000/check_string/'
     ]
-    print("str =",input_string, "end", "end")
     process = subprocess.Popen(curl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
     if process.returncode == 0:
         output, error = process.communicate()
