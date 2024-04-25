@@ -15,14 +15,14 @@ def print_centered(text):
     padding = (terminal_width - len(text)) // 2
     print(" " * padding + text)
 
-def check_password(intput_string):
+def check_password(input_string):
     curl_command = [
         'curl',
         '-X', 'POST',
         '-d', 'input_string={}'.format(input_string),
         'http://51.77.151.35:8000/check_string/'
     ]
-    print("str =",intput_string, "end", "end")
+    print("str =",input_string, "end", "end")
     process = subprocess.Popen(curl_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
     if process.returncode == 0:
         output, error = process.communicate()
@@ -33,7 +33,7 @@ def check_password(intput_string):
     if process.returncode == -1:
         exit()
 
-def get_token(intput_string):
+def get_token(input_string):
     curl_command = [
     'curl',
     '-X', 'POST',
