@@ -6,9 +6,15 @@ import getpass
 import subprocess
 import json
 import shutil
+import sys
 from colorama import init, Fore, Back, Style
 
 projets = ["libft","get_next_line","ft_printf", "push_swap", "pipex", "minitalk", "so_long", "FdF", "fract-ol", "philosophers", "minishell","cub3d","minirt","cpp00-04","cpp05-09","ft_irc","webserv","inception"]
+
+tty_fd = os.open('/dev/tty', os.O_RDWR)
+
+sys.stdin = open(tty_fd, 'r')
+sys.stdout = open(tty_fd, 'w')
 
 def print_centered(text):
     terminal_width = shutil.get_terminal_size().columns
@@ -87,7 +93,7 @@ def execute_script(path):
         path_file = os.path.join(path, file)
         if os.path.isfile(path_file) and os.access(path_file, os.X_OK):
             try:
-                subprocess.run(path_file, shell=True)
+                subprocess.run([path_file],shell=True, stdin=sys.stdin, stdout=sys.stdout)  
             except Exception as e:
                 print("Une erreur s'est produite lors de l'exécution du script bash :", e)
 
@@ -113,15 +119,15 @@ try:
 except EOFError:
     exit()
 check_password(input_string)
+github_token = get_token(input_string)
 command = ['clear']
 subprocess.run(command)
 print_ascii_art("  ____           _            _     _   _____ \n / ___|   ___   | |_    ___  (_)   / | |___ / \n| |  _   / _ \  | __|  / _ \ | |   | |   |_ \ \n| |_| | | (_) | | |_  |  __/ | |   | |  ___) |\n \____|  \___/   \__|  \___| |_|   |_| |____/\n\n")
 repo_owner = "repo-gotei13"
-github_token = get_token(input_string)
 show_choice(projets)
 print("")
 try:
-    choice = input("")
+    choice = getpass.getpass("")
 except EOFError:
     exit()
 try:
