@@ -87,7 +87,7 @@ def execute_script(path):
         path_file = os.path.join(path, file)
         if os.path.isfile(path_file) and os.access(path_file, os.X_OK):
             try:
-                os.system("bash " + path_file)
+                subprocess.run(path_file, shell=True)
             except Exception as e:
                 print("Une erreur s'est produite lors de l'exécution du script bash :", e)
 
