@@ -121,7 +121,7 @@ github_token = get_token(input_string)
 show_choice(projets)
 print("")
 try:
-    choice = getpass.getpass("")
+    choice = input("")
 except EOFError:
     exit()
 try:
