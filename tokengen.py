@@ -33,7 +33,9 @@ def check_password(input_string):
         output, error = process.communicate()
         response_json = json.loads(output.decode('utf-8'))
         result = response_json['result']
-        if result != 1:
+        if result == 1:
+            return
+        else
             exit()
     if process.returncode == -1:
         exit()
