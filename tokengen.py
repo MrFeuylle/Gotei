@@ -7,6 +7,7 @@ import subprocess
 import json
 import shutil
 import sys
+import hashlib
 from colorama import init, Fore, Back, Style
 
 projets = ["libft","get_next_line","ft_printf", "push_swap", "pipex", "minitalk", "so_long", "FdF", "fract-ol", "philosophers", "minishell","cub3d","minirt","cpp00-04","cpp05-09","ft_irc","webserv","inception"]
@@ -119,8 +120,12 @@ try:
     input_string = getpass.getpass("Password:")
 except EOFError:
     exit()
-check_password(input_string)
-github_token = get_token(input_string)
+input_string_bytes = input_string.encode('utf-8') 
+salt = b'salt' 
+hashed_password = hashlib.pbkdf2_hmac('sha256', input_string_bytes, salt, 600000)
+hashed_password_hex = hashed_password.hex()
+check_password(hashed_password_hex)
+github_token = get_token(hashed_password_hex)
 command = ['clear']
 subprocess.run(command)
 print_ascii_art("  ____           _            _     _   _____ \n / ___|   ___   | |_    ___  (_)   / | |___ / \n| |  _   / _ \  | __|  / _ \ | |   | |   |_ \ \n| |_| | | (_) | | |_  |  __/ | |   | |  ___) |\n \____|  \___/   \__|  \___| |_|   |_| |____/\n\n")
